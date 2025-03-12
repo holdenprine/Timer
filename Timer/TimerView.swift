@@ -36,6 +36,7 @@ struct TimerView: View {
                 .background(colorScheme == .dark ? Color.black : Color.white)
             
             TimerArc(progress: 1 - (Double(timeRemaining)/Double(totalTime)), lineWidth: strokeWidth).stroke(colorScheme == .dark ? Color.gray : Color.blue, lineWidth: 18).rotationEffect(.degrees(-90))
+                .frame(width: 300)
         }
         
         HStack {
@@ -73,16 +74,19 @@ struct TimerView: View {
         if timerRunning {
             timer?.invalidate()
             timer = nil
+            print(timer)
         } else {
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                 if timeRemaining > 0 {
                     timeRemaining -= 1
                     arcProgress = CGFloat(1 - (Double(timeRemaining) / Double(totalTime)))
                     print(arcProgress)
+                    
                 } else {
                     timer?.invalidate()
                     timer = nil
                     timerRunning = false
+                    print(timer)
                 }
             }
         }

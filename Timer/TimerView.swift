@@ -14,6 +14,7 @@ struct TimerView: View {
     @State private var timer: Timer?
 //    To handle state of arc
     @State private var arcProgress: CGFloat = 0.0
+//    Environment
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     
@@ -43,7 +44,7 @@ struct TimerView: View {
                 .background(colorScheme == .dark ? Color.black : Color.white)
             
             TimerArc(progress: arcProgress, lineWidth: strokeWidth)
-                .stroke(colorScheme == .dark ? Color.gray : Color.blue, lineWidth: 18)
+                .stroke(colorScheme == .dark ? Color.orange : Color.blue, lineWidth: 18)
                 .rotationEffect(.degrees(-90))
                 .frame(width: 300)
                 .animation(.easeInOut(duration: 0.5), value: arcProgress)

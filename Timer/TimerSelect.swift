@@ -15,6 +15,14 @@ struct TimerSelect: View {
 
     var body: some View {
         VStack {
+            
+            Spacer()
+            
+            Text("Holden's Timer")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .padding()
+            
             HStack {
 //                Hours
                 Picker(selection: $selectedHours, label: Text("Hours")) {
@@ -52,6 +60,7 @@ struct TimerSelect: View {
             }
             .frame(height: 150)
             
+            
             NavigationLink(destination: TimerView(totalTime: totalTimeInSeconds())) {
                 Text("Start Timer")
                     .font(.headline)
@@ -66,6 +75,7 @@ struct TimerSelect: View {
             Spacer()
         }
         .padding()
+        .frame(maxHeight: .infinity)
         .background(colorScheme == .dark ? Color.black : Color.white)
     }
     

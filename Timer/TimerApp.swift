@@ -11,8 +11,9 @@ import SwiftUI
 struct TimerApp: App {
     var body: some Scene {
         WindowGroup {
-            TimerView(totalTime: 100)
+            TimerView(totalTime: 100).preferredColorScheme(.dark)
             TimerSelect()
         }
     }
 }
+

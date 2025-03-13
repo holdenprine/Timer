@@ -11,6 +11,7 @@ struct TimerSelect: View {
     @State private var selectedMinutes = 1
     @State private var selectedSeconds = 0
     @State private var navigateToTimer = false
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         VStack {
@@ -65,6 +66,7 @@ struct TimerSelect: View {
             Spacer()
         }
         .padding()
+        .background(colorScheme == .dark ? Color.black : Color.white)
     }
     
     private func totalTimeInSeconds() -> Int {
@@ -73,5 +75,5 @@ struct TimerSelect: View {
 }
 
 #Preview {
-    TimerSelect()
+    TimerSelect().preferredColorScheme(.dark)
 }

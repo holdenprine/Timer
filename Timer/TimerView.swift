@@ -81,6 +81,8 @@ struct TimerView: View {
                 .foregroundColor(.white)
                 .padding()
                 .frame(width: 200, height: 50)
+                .background(Color.orange)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
         }
     }
     

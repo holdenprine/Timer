@@ -9,18 +9,25 @@ import SwiftUI
 
 struct TimerView: View {
     
-    @State private var timeRemaining = 100
+    @State private var timeRemaining: Int
     @State private var timerRunning = false
     @State private var timer: Timer?
-//    to handle state of arc
+//    To handle state of arc
     @State private var arcProgress: CGFloat = 0.0
     @Environment(\.colorScheme) var colorScheme
-    private let totalTime = 100
+    @Environment(\.dismiss) var dismiss
+    
+    private let totalTime: Int
     private let strokeWidth: CGFloat = 18
     
-//    for managing the initial time for the timer
+//    For managing the initial time for the timer
     private let initialTime: Int = 100
     
+//    initializes passed TimeSelected data
+    init(totalTime: Int) {
+        self.totalTime = totalTime
+        self._timeRemaining = State(initialValue: totalTime)
+    }
     
     var body: some View {
         
@@ -35,8 +42,11 @@ struct TimerView: View {
                 }
                 .background(colorScheme == .dark ? Color.black : Color.white)
             
-            TimerArc(progress: 1 - (Double(timeRemaining)/Double(totalTime)), lineWidth: strokeWidth).stroke(colorScheme == .dark ? Color.gray : Color.blue, lineWidth: 18).rotationEffect(.degrees(-90))
+            TimerArc(progress: arcProgress, lineWidth: strokeWidth)
+                .stroke(colorScheme == .dark ? Color.gray : Color.blue, lineWidth: 18)
+                .rotationEffect(.degrees(-90))
                 .frame(width: 300)
+                .animation(.easeInOut(duration: 0.5), value: arcProgress)
         }
         
         HStack {
@@ -62,6 +72,16 @@ struct TimerView: View {
             
         }
         .padding(.top, 60)
+        
+        Button(action: {
+            dismiss()
+        }) {
+            Text("End Timer")
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding()
+                .frame(width: 200, height: 50)
+        }
     }
     
     private func timeString(from seconds: Int) -> String {
@@ -74,19 +94,19 @@ struct TimerView: View {
         if timerRunning {
             timer?.invalidate()
             timer = nil
-            print(timer)
         } else {
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                 if timeRemaining > 0 {
                     timeRemaining -= 1
-                    arcProgress = CGFloat(1 - (Double(timeRemaining) / Double(totalTime)))
-                    print(arcProgress)
+                    
+                    withAnimation(.easeInOut(duration: 1)) {
+                        arcProgress = CGFloat(1 - (Double(timeRemaining) / Double(totalTime)))
+                    }
                     
                 } else {
                     timer?.invalidate()
                     timer = nil
                     timerRunning = false
-                    print(timer)
                 }
             }
         }
@@ -95,7 +115,9 @@ struct TimerView: View {
     
     private func resetTimer() {
         timeRemaining = initialTime
-        arcProgress = 0.0
+        withAnimation(.easeInOut(duration: 0.5)) {
+            arcProgress = 0.0
+        }
         if timerRunning {
             timer?.invalidate()
             timer = nil
@@ -105,5 +127,5 @@ struct TimerView: View {
 }
 
 #Preview {
-    TimerView().preferredColorScheme(.dark)
+    TimerView(totalTime: 100).preferredColorScheme(.dark)
 }

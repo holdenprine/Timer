@@ -24,7 +24,7 @@ struct RippleEffect: ViewModifier {
             .float(amplitude),
             .float(frequency),
             .float(decay),
-            .float(speed),
+            .float(speed)
             )
         let maxSampleOffset = maxSampleOffset
         let elapsedTime = elapsedTime
@@ -42,21 +42,44 @@ struct RippleEffect: ViewModifier {
     }
 }
 
-struct RippleEffect<T: Equatable>: ViewModifier {
+struct RippleEffectModifier<T: Equatable>: ViewModifier {
     var origin: CGPoint
     var trigger: T
     var amplitude: Double
     var frequency: Double
     var decay: Double
     var speed: Double
+    
+    @State private var elapsedTime: TimeInterval = 0
+    @State private var startTime: Date?
+    
     init(at origin: CGPoint, trigger: T, amplitude: Double = 12, frequency: Double = 15, decay: Double = 8, speed: Double = 1200) {
-        self.origin = origin
-        self.trigger = trigger
-        self.amplitude = amplitude
-        self.frequency = frequency
-        self.decay = decay
-        self.speed = speed
+        self.origin = origin;
+        self.trigger = trigger;
+        self.amplitude = amplitude;
+        self.frequency = frequency;
+        self.decay = decay;
+        self.speed = speed;
+    }
+    
+    func body(content: Content) -> some View {
+        content
+            .modifier(
+                RippleEffect(
+                    origin: origin, elapsedTime: elapsedTime, duration: 2.0, amplitude: amplitude, frequency: frequency, decay: decay, speed: speed
+                )
+            ).onChange(of: trigger) { _ in
+                startTime = Date()
+                elapsedTime = 0
+                withAnimation(.linear(duration: 2.0)) {
+                    elapsedTime = 2.0
+                }
+            }
     }
 }
 
-
+extension View {
+    func rippleEffect<T: Equatable>(at origin: CGPoint, trigger: T, amplitude: Double = 12, frequency: Double = 15, decay: Double = 8, speed: Double = 1200) -> some View {
+        self.modifier(RippleEffectModifier(at: origin, trigger: trigger, amplitude: amplitude, frequency: frequency, decay: decay, speed: speed))
+    }
+}

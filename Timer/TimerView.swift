@@ -14,6 +14,8 @@ struct TimerView: View {
     @State private var timer: Timer?
 //    To handle state of arc
     @State private var arcProgress: CGFloat = 0.0
+//    To handle Riiple Effect State
+    @State private var triggerRipple: Bool = false
 //    Environment
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
@@ -48,6 +50,12 @@ struct TimerView: View {
                 .rotationEffect(.degrees(-90))
                 .frame(width: 300)
                 .animation(.easeInOut(duration: 0.5), value: arcProgress)
+            
+//            ripple implementation
+            Circle()
+                .stroke(Color.clear, lineWidth: 1)
+                .frame(width: 300, height: 300)
+                .rippleEffect(at: CGPoint(x: 150, y: 150), trigger: triggerRipple)
         }
         
         HStack {
@@ -114,6 +122,9 @@ struct TimerView: View {
             }
         }
         timerRunning.toggle()
+        
+        triggerRipple.toggle()
+        print("Ripple Triggered: \(triggerRipple)")
     }
     
     private func resetTimer() {

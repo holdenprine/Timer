@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import simd
 
 struct RippleEffect: ViewModifier {
     var origin: CGPoint
@@ -19,7 +20,7 @@ struct RippleEffect: ViewModifier {
     func body(content: Content) -> some View {
         let shader = ShaderLibrary.Ripple(
             .float2(origin),
-            .float2(elapsedTime),
+            .float(elapsedTime),
 //        Params
             .float(amplitude),
             .float(frequency),
@@ -79,7 +80,7 @@ struct RippleEffectModifier<T: Equatable>: ViewModifier {
 }
 
 extension View {
-    func rippleEffect<T: Equatable>(at origin: CGPoint, trigger: T, amplitude: Double = 12, frequency: Double = 15, decay: Double = 8, speed: Double = 1200) -> some View {
+    func rippleEffect<T: Equatable>(at origin: CGPoint, trigger: T, amplitude: Double = 45, frequency: Double = 15, decay: Double = 8, speed: Double = 1200) -> some View {
         self.modifier(RippleEffectModifier(at: origin, trigger: trigger, amplitude: amplitude, frequency: frequency, decay: decay, speed: speed))
     }
 }

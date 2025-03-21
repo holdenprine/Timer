@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import simd
 
 struct RippleEffect: ViewModifier {
     var origin: CGPoint
@@ -18,6 +17,7 @@ struct RippleEffect: ViewModifier {
     var speed: Double
     
     func body(content: Content) -> some View {
+        print("RippleEffect Updated - Elapsed Time: \(elapsedTime)")
         let shader = ShaderLibrary.Ripple(
             .float2(origin),
             .float(elapsedTime),
@@ -30,7 +30,7 @@ struct RippleEffect: ViewModifier {
         let maxSampleOffset = maxSampleOffset
         let elapsedTime = elapsedTime
         let duration = duration
-        content.visualEffect {view, _ in
+        return content.visualEffect {view, _ in
             view.layerEffect(
                 shader,
                 maxSampleOffset: maxSampleOffset,
@@ -54,7 +54,7 @@ struct RippleEffectModifier<T: Equatable>: ViewModifier {
     @State private var elapsedTime: TimeInterval = 0
     @State private var startTime: Date?
     
-    init(at origin: CGPoint, trigger: T, amplitude: Double = 12, frequency: Double = 15, decay: Double = 8, speed: Double = 1200) {
+    init(at origin: CGPoint, trigger: T, amplitude: Double = 15, frequency: Double = 15, decay: Double = 8, speed: Double = 1200) {
         self.origin = origin;
         self.trigger = trigger;
         self.amplitude = amplitude;
@@ -72,15 +72,25 @@ struct RippleEffectModifier<T: Equatable>: ViewModifier {
             ).onChange(of: trigger) { _ in
                 startTime = Date()
                 elapsedTime = 0
-                withAnimation(.linear(duration: 2.0)) {
-                    elapsedTime = 2.0
+//                withAnimation(.linear(duration: 2.0)) {
+//                    elapsedTime = 2.0
+//                }
+                Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) {timer in
+                    guard let startTime else { return }
+                    
+                    let currentTime = Date().timeIntervalSince(startTime)
+                    elapsedTime = min(currentTime, 2.0)
+                    
+                    if elapsedTime >= 2.0 {
+                        timer.invalidate()
+                    }
                 }
             }
     }
 }
 
 extension View {
-    func rippleEffect<T: Equatable>(at origin: CGPoint, trigger: T, amplitude: Double = 45, frequency: Double = 15, decay: Double = 8, speed: Double = 1200) -> some View {
+    func rippleEffect<T: Equatable>(at origin: CGPoint, trigger: T, amplitude: Double = 15, frequency: Double = 15, decay: Double = 8, speed: Double = 1200) -> some View {
         self.modifier(RippleEffectModifier(at: origin, trigger: trigger, amplitude: amplitude, frequency: frequency, decay: decay, speed: speed))
     }
 }

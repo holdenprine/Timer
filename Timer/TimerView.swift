@@ -114,6 +114,11 @@ struct TimerView: View {
                         arcProgress = CGFloat(1 - (Double(timeRemaining) / Double(totalTime)))
                     }
                     
+                    if(totalTime - timeRemaining) % 2 == 0 {
+                        triggerRipple.toggle()
+                        print("Ripple Triggered: \(triggerRipple)")
+                    }
+                    
                 } else {
                     timer?.invalidate()
                     timer = nil
@@ -122,9 +127,6 @@ struct TimerView: View {
             }
         }
         timerRunning.toggle()
-        
-        triggerRipple.toggle()
-        print("Ripple Triggered: \(triggerRipple)")
     }
     
     private func resetTimer() {

@@ -93,6 +93,9 @@ struct TimerView: View {
                 .background(Color.orange)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         }
+        .onDisappear {
+            stopTimer()
+        }
     }
     
     private func timeString(from seconds: Int) -> String {
@@ -120,25 +123,30 @@ struct TimerView: View {
                     }
                     
                 } else {
-                    timer?.invalidate()
-                    timer = nil
-                    timerRunning = false
+                   stopTimer()
                 }
             }
         }
         timerRunning.toggle()
     }
     
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+        timerRunning = false
+    }
+    
     private func resetTimer() {
-        timeRemaining = initialTime
+        timeRemaining = totalTime
         withAnimation(.easeInOut(duration: 0.5)) {
             arcProgress = 0.0
         }
-        if timerRunning {
-            timer?.invalidate()
-            timer = nil
-            timerRunning = false
-        }
+//        if timerRunning {
+//            timer?.invalidate()
+//            timer = nil
+//            timerRunning = false
+//        }
+        stopTimer()
     }
 }
 
